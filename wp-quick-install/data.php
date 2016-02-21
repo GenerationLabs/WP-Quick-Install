@@ -3,42 +3,42 @@
 // Enter below the installation folder (uncomment to use):
 ////////
 
-//directory = demo
+$directory = 'demo';
 
 
 ////////
 // Entrez below the code language (uncomment to use):
 ////////
 
-//language = en_US
+$language = 'en_US';
 
 
 ////////
 // Entrez below the Site Title (uncomment to use):
 ////////
 
-//title = "New Projet"
+$title = 'New Project';
 
 
 ////////
 // Enter below your database connection detail (uncomment to use):
 ////////
 
-//db['dbname']          = demo
-//db['dbhost']          = localhost
-//db['prefix']          = wp_
-//db['uname']           = root
-//db['pwd']             = root
-//db['default_content'] = 1
+$db['dbname']          = '';
+$db['dbhost']          = 'localhost';
+$db['prefix']          = 'wp_';
+$db['uname']           = 'root';
+$db['pwd']             = 'root';
+$db['default_content'] = 1;
 
 
 ////////
 // Enter below the admin username and password (uncomment to use):
 ////////
 
-//admin['user_login'] = admin
-//admin['password']   = demo
-//admin['email']      = demo@example.com
+$admin['user_login'] = 'admin';
+$admin['password']   = 'demo';
+$admin['email']      = 'demo@example.com';
 
 
 ////////
@@ -46,7 +46,7 @@
 // 1 = Yes, 0 = No
 ////////
 
-//seo = 0
+$seo = 0;
 
 
 ////////
@@ -54,7 +54,7 @@
 // 1 = Yes, 0 = No
 ////////
 
-//activate_theme = 1
+$activate_theme = 1;
 
 
 ////////
@@ -62,14 +62,14 @@
 // 1 = Yes, 0 = No
 ////////
 
-//delete_default_themes = 1
+$delete_default_themes = 1;
 
 
 ////////
 // List all plugin you want to install below  (uncomment to use):
 ////////
 
-//plugins[] = wordpress-seo
+$plugins[] = 'wordpress-seo';
 
 
 
@@ -78,7 +78,7 @@
 // 1 = Yes, 0 = No
 ////////
 
-//plugins_premium = 0
+$plugins_premium = 0;
 
 
 ////////
@@ -86,50 +86,50 @@
 // 1 = Yes, 0 = No
 ////////
 
-//activate_plugins = 0
+$activate_plugins = 0;
 
 
 ////////
 // Permalink Structure (uncomment to use):
 ////////
 
-//permalink_structure = %postname%
+$permalink_structure = '%postname%';
 
 ////////
 // Medias (uncomment to use):
 ////////
 
-//uploads['upload_dir'] 					 = 'images'//
-//uploads['thumbnail_size_w'] 			 = 0//
-//uploads['thumbnail_size_h'] 			 = 0//
-//uploads['thumbnail_crop'] 				 = 1//
-//uploads['medium_size_w'] 				 = 0//
-//uploads['medium_size_h'] 				 = 0//
-//uploads['large_size_w'] 				 = 0//
-//uploads['large_size_h'] 				 = 0//
-//uploads['uploads_use_yearmonth_folders'] = 1//
+$uploads['upload_dir'] 					 = 'images';
+$uploads['thumbnail_size_w'] 			 = 0;
+$uploads['thumbnail_size_h'] 			 = 0;
+$uploads['thumbnail_crop'] 			 = 1;
+$uploads['medium_size_w'] 				 = 0;
+$uploads['medium_size_h'] 				 = 0;
+$uploads['large_size_w'] 				 = 0;
+$uploads['large_size_h'] 				 = 0;
+$uploads['uploads_use_yearmonth_folders'] = 1;
 
 ////////
 // Constant to add to wp-config.php (uncomment to use) :
 // 1 = Yes, 0 = No
 ////////
 
-//wp_config['post_revisions']     = 0
-//wp_config['disallow_file_edit'] = 1
-//wp_config['autosave_interval']  = 7200
-//wp_config['debug']              = 1
-//wp_config['wpcom_api_key']      =
+$wp_config['post_revisions']     = 0;
+$wp_config['disallow_file_edit'] = 1;
+$wp_config['autosave_interval']  = 7200;
+$wp_config['debug']              = 1;
+$wp_config['wpcom_api_key']      = '';
 
 
 ////////
 // Post to automatically add after WordPress installation (uncomment to use):
-// title   = Title
-// status  = Status (publish, draft, etc...). Default : draft
-// type    = Post Type. Default : post
-// content = Content (HTML allowed)
-// slug    = Slug
-// parent  = Parent page Title
+$title   = 'Title';
+$status  = 'Status (publish, draft, etc...). Default : draft';
+$type    = 'Post Type. Default : post';
+$content = 'Content (HTML allowed)';
+$slug    = 'Slug';
+$parent  = 'Parent page Title';
 ////////
 
-//posts[0] = title::Legal - status::publish - content::Lorem ipsum dolor sit amet - type::page
-//posts[1] = title::Contact - status::publish - content::Lorem ipsum dolor sit amet - type::page - parent::Legal
+$posts[0] = title::Legal - status::publish - content::Lorem ipsum dolor sit amet - type::page;
+$posts[1] = title::Contact - status::publish - content::Lorem ipsum dolor sit amet - type::page - parent::Legal;
