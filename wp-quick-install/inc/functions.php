@@ -22,7 +22,7 @@ function check_before_upload(){
 
 	// DB Test
 	try {
-		$db = new PDO('mysql:host='. $_POST['dbhost'] .';dbname=' . $_POST['dbname'] , $_POST['uname'], $_POST['pwd'] );
+		$db = new PDO('mysql:host='. $_db['dbhost'] .';dbname=' . $_db['dbname'] , $_db['uname'], $_db['pwd'] );
 	}
 	catch (Exception $e) {
 		$data['db'] = "error etablishing connection";
@@ -34,7 +34,7 @@ function check_before_upload(){
 	}
 
 	// We send the response
-	echo json_encode( $data );
+	return $data;
 
 }
 
@@ -43,7 +43,7 @@ function check_before_upload(){
 function download_wp(){
 
 	// Get WordPress language
-	$language = substr( $_POST['language'], 0, 6 );
+	$language = substr( LANGUAGE, 0, 6 );
 
 	// Get WordPress data
 	$wp = json_decode( file_get_contents( WP_API_CORE . $language ) )->offers[0];
@@ -54,6 +54,10 @@ function download_wp(){
 
 	if ( ! file_exists( WPQI_CACHE_CORE_PATH . 'wordpress-' . $wp->version . '-' . $language  . '.zip' ) ) {
 		file_put_contents( WPQI_CACHE_CORE_PATH . 'wordpress-' . $wp->version . '-' . $language  . '.zip', file_get_contents( $wp->download ) );
+
+		return true;
+	}else{
+		return false;
 	}
 
 }
@@ -61,9 +65,10 @@ function download_wp(){
 
 
 function unzip_wp(){
-
+	$directory = DIRECTORY;
+	$language = LANGUAGE;
 	// Get WordPress language
-	$language = substr( $_POST['language'], 0, 6 );
+	$language = substr( $language, 0, 6 );
 
 	// Get WordPress data
 	$wp = json_decode( file_get_contents( WP_API_CORE . $language ) )->offers[0];
@@ -105,12 +110,15 @@ function unzip_wp(){
 		unlink( $directory . '/license.txt' ); // We remove licence.txt
 		unlink( $directory . '/readme.html' ); // We remove readme.html
 		unlink( $directory . '/wp-content/plugins/hello.php' ); // We remove Hello Dolly plugin
+		return true;
+	}else{
+	return false;
 	}
 
 }
 
 function wp_config(){
-
+	$directory = DIRECTORY;
 	/*--------------------------*/
 	/*	Let's create the wp-config file
 	/*--------------------------*/
@@ -130,7 +138,7 @@ function wp_config(){
 	foreach ( $config_file as &$line ) {
 
 		if ( '$table_prefix  =' == substr( $line, 0, 16 ) ) {
-			$line = '$table_prefix  = \'' . sanit( $_POST[ 'prefix' ] ) . "';\r\n";
+			$line = '$table_prefix  = \'' . sanit( WPPREFIX ) . "';\r\n";
 			continue;
 		}
 
@@ -144,63 +152,60 @@ function wp_config(){
 			case 'WP_DEBUG'	   :
 
 				// Debug mod
-				if ( (int) $_POST['debug'] == 1 ) {
+				if ( (int) WPCONFIGDEBUG == 1 ) {
 					$line = "define('WP_DEBUG', 'true');\r\n";
 
 					// Display error
-					if ( (int) $_POST['debug_display'] == 1 ) {
-						$line .= "\r\n\n " . "/** Affichage des erreurs à l'écran */" . "\r\n";
+					if ( (int) WPCONFIGDEBUGDISPLAY == 1 ) {
+
 						$line .= "define('WP_DEBUG_DISPLAY', 'true');\r\n";
 					}
 
 					// To write error in a log files
-					if ( (int) $_POST['debug_log'] == 1 ) {
-						$line .= "\r\n\n " . "/** Ecriture des erreurs dans un fichier log */" . "\r\n";
+					if ( (int) WPCONFIGDEBUGLOG == 1 ) {
+
 						$line .= "define('WP_DEBUG_LOG', 'true');\r\n";
 					}
 				}
 
 				// We add the extras constant
-				if ( ! empty( $_POST['uploads'] ) ) {
-					$line .= "\r\n\n " . "/** Dossier de destination des fichiers uploadés */" . "\r\n";
-					$line .= "define('UPLOADS', '" . sanit( $_POST['uploads'] ) . "');";
+				if ( ! empty( UPLOADDIR ) ) {
+
+					$line .= "define('UPLOADS', '" . sanit( UPLOADDIR ) . "');";
 				}
 
-				if ( (int) $_POST['post_revisions'] >= 0 ) {
-					$line .= "\r\n\n " . "/** Désactivation des révisions d'articles */" . "\r\n";
-					$line .= "define('WP_POST_REVISIONS', " . (int) $_POST['post_revisions'] . ");";
+				if ( (int) POSTREVISIONS >= 0 ) {
+
+					$line .= "define('WP_POST_REVISIONS', " . (int) POSTREVISIONS . ");";
 				}
 
-				if ( (int) $_POST['disallow_file_edit'] == 1 ) {
-					$line .= "\r\n\n " . "/** Désactivation de l'éditeur de thème et d'extension */" . "\r\n";
+				if ( (int) DISALLOWFILEEDIT == 1 ) {
 					$line .= "define('DISALLOW_FILE_EDIT', true);";
 				}
 
-				if ( (int) $_POST['autosave_interval'] >= 60 ) {
-					$line .= "\r\n\n " . "/** Intervalle des sauvegardes automatique */" . "\r\n";
-					$line .= "define('AUTOSAVE_INTERVAL', " . (int) $_POST['autosave_interval'] . ");";
+				if ( (int) AUTOSAVETIMEINTERVAL >= 60 ) {
+					$line .= "define('AUTOSAVE_INTERVAL', " . (int) AUTOSAVETIMEINTERVAL . ");";
 				}
 
-				if ( ! empty( $_POST['wpcom_api_key'] ) ) {
+				if ( ! empty( WPCOMAPIKEY ) ) {
 					$line .= "\r\n\n " . "/** WordPress.com API Key */" . "\r\n";
-					$line .= "define('WPCOM_API_KEY', '" . $_POST['wpcom_api_key'] . "');";
+					$line .= "define('WPCOM_API_KEY', '" . WPCOMAPIKEY . "');";
 				}
 
-				$line .= "\r\n\n " . "/** On augmente la mémoire limite */" . "\r\n";
 				$line .= "define('WP_MEMORY_LIMIT', '96M');" . "\r\n";
 
 				break;
 			case 'DB_NAME'     :
-				$line = "define('DB_NAME', '" . sanit( $_POST[ 'dbname' ] ) . "');\r\n";
+				$line = "define('DB_NAME', '" . sanit( WPDBNAME ) . "');\r\n";
 				break;
 			case 'DB_USER'     :
-				$line = "define('DB_USER', '" . sanit( $_POST['uname'] ) . "');\r\n";
+				$line = "define('DB_USER', '" . sanit( WPUSER ) . "');\r\n";
 				break;
 			case 'DB_PASSWORD' :
-				$line = "define('DB_PASSWORD', '" . sanit( $_POST['pwd'] ) . "');\r\n";
+				$line = "define('DB_PASSWORD', '" . sanit( WPPASS ) . "');\r\n";
 				break;
 			case 'DB_HOST'     :
-				$line = "define('DB_HOST', '" . sanit( $_POST['dbhost'] ) . "');\r\n";
+				$line = "define('DB_HOST', '" . sanit( WPDBHOST ) . "');\r\n";
 				break;
 			case 'AUTH_KEY'         :
 			case 'SECURE_AUTH_KEY'  :
@@ -214,7 +219,7 @@ function wp_config(){
 				break;
 
 			case 'WPLANG' :
-				$line = "define('WPLANG', '" . sanit( $_POST['language'] ) . "');\r\n";
+				$line = "define('WPLANG', '" . sanit( LANGUAGE ) . "');\r\n";
 				break;
 		}
 	}
@@ -229,11 +234,13 @@ function wp_config(){
 	// We set the good rights to the wp-config file
 	chmod( $directory . 'wp-config.php', 0666 );
 
+	return true;
 }
 
 
 function install_wp(){
-
+	global $posts;
+	$directory = DIRECTORY;
 	/*--------------------------*/
 	/*	Let's install WordPress database
 	/*--------------------------*/
@@ -250,15 +257,11 @@ function install_wp(){
 	require_once( $directory . 'wp-includes/wp-db.php' );
 
 	// WordPress installation
-	wp_install( $_POST[ 'weblog_title' ], $_POST['user_login'], $_POST['admin_email'], (int) $_POST[ 'blog_public' ], '', $_POST['admin_password'] );
+	wp_install( TITLE, USERLOGIN, USEREMAIL, (int) SEO, '', USERPASSWORD );
 
 	// We update the options with the right siteurl et homeurl value
-	$protocol = ! is_ssl() ? 'http' : 'https';
-		 $get = basename( dirname( __FILE__ ) ) . '/index.php/wp-admin/install.php?action=install_wp';
-		 $dir = str_replace( '../', '', $directory );
-		 $link = $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-		 $url = str_replace( $get, $dir, $link );
-		 $url = trim( $url, '/' );
+	$protocol = ! is_ssl() ? 'http://' : 'https://';
+	$url = trim( $protocol.SITEURL, '/' );
 
 	update_option( 'siteurl', $url );
 	update_option( 'home', $url );
@@ -267,7 +270,7 @@ function install_wp(){
 	/*	We remove the default content
 	/*--------------------------*/
 
-	if ( $_POST['default_content'] == '1' ) {
+	if ( WPDEFAULTCONTENT == '1' ) {
 		wp_delete_post( 1, true ); // We remove the article "Hello World"
 		wp_delete_post( 2, true ); // We remove the "Exemple page"
 	}
@@ -275,84 +278,62 @@ function install_wp(){
 	/*--------------------------*/
 	/*	We update permalinks
 	/*--------------------------*/
-	if ( ! empty( $_POST['permalink_structure'] ) ) {
-		update_option( 'permalink_structure', $_POST['permalink_structure'] );
+	if ( ! empty( PERMALINK ) ) {
+		update_option( 'permalink_structure', PERMALINK );
 	}
 
 	/*--------------------------*/
 	/*	We update the media settings
 	/*--------------------------*/
 
-	if ( ! empty( $_POST['thumbnail_size_w'] ) || !empty($_POST['thumbnail_size_h'] ) ) {
-		update_option( 'thumbnail_size_w', (int) $_POST['thumbnail_size_w'] );
-		update_option( 'thumbnail_size_h', (int) $_POST['thumbnail_size_h'] );
-		update_option( 'thumbnail_crop', (int) $_POST['thumbnail_crop'] );
-	}
 
-	if ( ! empty( $_POST['medium_size_w'] ) || !empty( $_POST['medium_size_h'] ) ) {
-		update_option( 'medium_size_w', (int) $_POST['medium_size_w'] );
-		update_option( 'medium_size_h', (int) $_POST['medium_size_h'] );
-	}
-
-	if ( ! empty( $_POST['large_size_w'] ) || !empty( $_POST['large_size_h'] ) ) {
-		update_option( 'large_size_w', (int) $_POST['large_size_w'] );
-		update_option( 'large_size_h', (int) $_POST['large_size_h'] );
-	}
-
-	 update_option( 'uploads_use_yearmonth_folders', (int) $_POST['uploads_use_yearmonth_folders'] );
+	 update_option( 'uploads_use_yearmonth_folders', (int) YEARMONTHFOLDERS );
 
 	/*--------------------------*/
 	/*	We add the pages we found in the data.ini file
 	/*--------------------------*/
 
-	// We check if data.ini exists
-	if ( file_exists( 'data.ini' ) ) {
 
-		// We parse the file and get the array
-		$file = parse_ini_file( 'data.ini' );
 
 		// We verify if we have at least one page
-		if ( count( $file['posts'] ) >= 1 ) {
+		if ( count( $posts ) >= 1 ) {
 
-			foreach ( $file['posts'] as $post ) {
+			foreach ( $posts as $postdata ) {
 
-				// We get the line of the page configuration
-				$pre_config_post = explode( "-", $post );
-				$post = array();
 
-				foreach ( $pre_config_post as $config_post ) {
+
+				foreach($postdata as $key => $value){
 
 					// We retrieve the page title
-					if ( preg_match( '#title::#', $config_post ) == 1 ) {
-						$post['title'] = str_replace( 'title::', '', $config_post );
+					if ( 'title' == $key ) {
+						$post['title'] = $value;
 					}
 
 					// We retrieve the status (publish, draft, etc...)
-					if ( preg_match( '#status::#', $config_post ) == 1 ) {
-						$post['status'] = str_replace( 'status::', '', $config_post );
+					if ( 'status' == $key ) {
+						$post['status'] = $value;
 					}
 
 					// On retrieve the post type (post, page or custom post types ...)
-					if ( preg_match( '#type::#', $config_post ) == 1 ) {
-						$post['type'] = str_replace( 'type::', '', $config_post );
+					if ( 'type' == $key ) {
+						$post['type'] = $value;
 					}
 
 					// We retrieve the content
-					if ( preg_match( '#content::#', $config_post ) == 1 ) {
-						$post['content'] = str_replace( 'content::', '', $config_post );
+					if ( 'content' == $key ) {
+						$post['content'] = $value;
 					}
 
 					// We retrieve the slug
-					if ( preg_match( '#slug::#', $config_post ) == 1 ) {
-						$post['slug'] = str_replace( 'slug::', '', $config_post );
+					if ( 'slug' == $key ) {
+						$post['slug'] = $value;
 					}
 
 					// We retrieve the title of the parent
-					if ( preg_match( '#parent::#', $config_post ) == 1 ) {
-						$post['parent'] = str_replace( 'parent::', '', $config_post );
+					if ( 'parent' == $key ) {
+						$post['parent'] = $value;
 					}
-
-				} // foreach
+				}
 
 				if ( isset( $post['title'] ) && !empty( $post['title'] ) ) {
 
@@ -379,13 +360,14 @@ function install_wp(){
 
 			}
 		}
-	}
+
+		return true;
 
 }
 
 
 function install_theme(){
-
+	$directory = DIRECTORY;
 	/** Load WordPress Bootstrap */
 	require_once( $directory . 'wp-load.php' );
 
@@ -414,12 +396,14 @@ function install_theme(){
 
 			// Let's activate the theme
 			// Note : The theme is automatically activated if the user asked to remove the default theme
-			if ( $_POST['activate_theme'] == 1 || $_POST['delete_default_themes'] == 1 ) {
+			if ( ACTIVATEDTHEME == 1 || DELETEDEFAULTTHEMES == 1 ) {
 				switch_theme( $theme_name, $theme_name );
 			}
 
 			// Let's remove the Tweenty family
-			if ( $_POST['delete_default_themes'] == 1 ) {
+			if ( DELETEDEFAULTTHEMES == 1 ) {
+				delete_theme( 'twentysixteen' );
+				delete_theme( 'twentyfithteen' );
 				delete_theme( 'twentyfourteen' );
 				delete_theme( 'twentythirteen' );
 				delete_theme( 'twentytwelve' );
@@ -432,18 +416,18 @@ function install_theme(){
 
 		}
 	}
-
+	return true;
 }
 
 function install_plugins(){
-
+	$directory = DIRECTORY;
 	/*--------------------------*/
 	/*	Let's retrieve the plugin folder
 	/*--------------------------*/
 
-	if ( ! empty( $_POST['plugins'] ) ) {
+	if ( ! empty( PLUGINNAMES ) ) {
 
-		$plugins     = explode( ";", $_POST['plugins'] );
+		$plugins     = explode( ",", PLUGINNAMES );
 		$plugins     = array_map( 'trim' , $plugins );
 		$plugins_dir = $directory . 'wp-content/plugins/';
 
@@ -472,7 +456,7 @@ function install_plugins(){
 		}
 	}
 
-	if ( $_POST['plugins_premium'] == 1 ) {
+	if ( PREMIUMPLUGINS == 1 ) {
 
 		// We scan the folder
 		$plugins = scandir( 'plugins' );
@@ -504,7 +488,7 @@ function install_plugins(){
 	/*	We activate extensions
 	/*--------------------------*/
 
-	if ( $_POST['activate_plugins'] == 1 ) {
+	if ( ACTIVATEPLUGINS == 1 ) {
 
 		/** Load WordPress Bootstrap */
 		require_once( $directory . 'wp-load.php' );
@@ -515,7 +499,7 @@ function install_plugins(){
 		// Activation
 		activate_plugins( array_keys( get_plugins() ) );
 	}
-
+	return true;
 }
 
 function success(){
@@ -533,15 +517,11 @@ function success(){
 	/*--------------------------*/
 	/*	We update permalinks
 	/*--------------------------*/
-	if ( ! empty( $_POST['permalink_structure'] ) ) {
+	if ( ! empty( PERMALINK ) ) {
 		file_put_contents( $directory . '.htaccess' , null );
 		flush_rewrite_rules();
 	}
 
-	echo '<div id="errors" class="alert alert-danger"><p style="margin:0;"><strong>' . _('Warning') . '</strong>: Don\'t forget to delete WP Quick Install folder.</p></div>';
-
-	// Link to the admin
-	echo '<a href="' . admin_url() . '" class="button" style="margin-right:5px;" target="_blank">'. _('Log In') . '</a>';
-	echo '<a href="' . home_url() . '" class="button" target="_blank">' . _('Go to website') . '</a>';
+	return true;
 
 }

@@ -1,4 +1,4 @@
-WP Quick Install 1.4.1
+WP Quick Install 1.5.0 - PHP BACKEND VERSION
 ================
 
 WP Quick Install is the easiest way to install WordPress.
@@ -9,6 +9,10 @@ Simply download the .zip archive et go to *wp-quick-install/index.php*
 
 Changelog
 ================
+1.5.0
+-----------
+* Removed front end. Hence... "PHP BACKEND VERSION".
+* Made so all you need to do to execute the install is include(index.php);
 
 1.4.1
 -----------

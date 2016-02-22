@@ -1,135 +1,151 @@
 <?php
 ////////
-// Enter below the installation folder (uncomment to use):
+// Enter below the installation folder :
 ////////
 
-$directory = 'demo';
-
-
-////////
-// Entrez below the code language (uncomment to use):
-////////
-
-$language = 'en_US';
+define('DIRECTORY', 'demo');
 
 
 ////////
-// Entrez below the Site Title (uncomment to use):
+// Enter below the code language :
 ////////
 
-$title = 'New Project';
-
-
-////////
-// Enter below your database connection detail (uncomment to use):
-////////
-
-$db['dbname']          = '';
-$db['dbhost']          = 'localhost';
-$db['prefix']          = 'wp_';
-$db['uname']           = 'root';
-$db['pwd']             = 'root';
-$db['default_content'] = 1;
+define('LANGUAGE', 'en_US');
 
 
 ////////
-// Enter below the admin username and password (uncomment to use):
+// Enter below the Site Title :
 ////////
 
-$admin['user_login'] = 'admin';
-$admin['password']   = 'demo';
-$admin['email']      = 'demo@example.com';
+define('TITLE', 'New Project');
+
+
+// SITE URL: without http://
+define('SITEURL', 'example.com');
+
+////////
+// Enter below your database connection detail :
+////////
+
+define('WPDBNAME', '');
+define('WPDBHOST', 'localhost');
+define('WPPREFIX', 'wp_');
+define('WPUSER', 'root');
+define('WPPASS', 'root');
+define('WPDEFAULTCONTENT', 1);
 
 
 ////////
-// Enable SEO ? (uncomment to use) :
+// Enter below the admin username and password :
+////////
+
+define('USERLOGIN', 'admin');
+define('USERPASSWORD', 'demo');
+define('USEREMAIL', 'demo@example.com');
+
+
+////////
+// Enable SEO ?  :
 // 1 = Yes, 0 = No
 ////////
 
-$seo = 0;
+define('SEO', 1);
 
 
 ////////
-// Activate Theme after WordPress installation? (uncomment to use):
+// Activate Theme after WordPress installation? :
 // 1 = Yes, 0 = No
 ////////
 
-$activate_theme = 1;
+define('ACTIVATEDTHEME', 1);
 
 
 ////////
-// Delete Twenty Themes ? (uncomment to use) :
+// Delete Twenty Themes ?  :
 // 1 = Yes, 0 = No
 ////////
 
-$delete_default_themes = 1;
+define('DELETEDEFAULTTHEMES', 1);
 
 
 ////////
-// List all plugin you want to install below  (uncomment to use):
+// List all plugin you want to install from Wordpress site below  (sperated by comma):
 ////////
 
-$plugins[] = 'wordpress-seo';
+define('PLUGINNAMES', 'wordpress-seo');
 
 
 
 ////////
-// Install extensions which are on the "wp-quick-install" "plugins" folder (uncomment to use):
+// Install extensions which are on the "wp-quick-install" "plugins" folder :
 // 1 = Yes, 0 = No
 ////////
 
-$plugins_premium = 0;
+define('PREMIUMPLUGINS', 0);
 
 
 ////////
-// Activate plugins after WordPress Installation (uncomment to use):
+// Activate plugins after WordPress Installation :
 // 1 = Yes, 0 = No
 ////////
 
-$activate_plugins = 0;
+define('ACTIVATEPLUGINS', 1);
 
 
 ////////
-// Permalink Structure (uncomment to use):
+// Permalink Structure :
 ////////
 
-$permalink_structure = '%postname%';
+define('PERMALINK', '%postname%');
 
 ////////
-// Medias (uncomment to use):
+// Medias :
 ////////
 
-$uploads['upload_dir'] 					 = 'images';
-$uploads['thumbnail_size_w'] 			 = 0;
-$uploads['thumbnail_size_h'] 			 = 0;
-$uploads['thumbnail_crop'] 			 = 1;
-$uploads['medium_size_w'] 				 = 0;
-$uploads['medium_size_h'] 				 = 0;
-$uploads['large_size_w'] 				 = 0;
-$uploads['large_size_h'] 				 = 0;
-$uploads['uploads_use_yearmonth_folders'] = 1;
+define('UPLOADDIR', 'img');
+define('YEARMONTHFOLDERS', 0);
 
 ////////
-// Constant to add to wp-config.php (uncomment to use) :
+// Constant to add to wp-config.php  :
 // 1 = Yes, 0 = No
 ////////
 
-$wp_config['post_revisions']     = 0;
-$wp_config['disallow_file_edit'] = 1;
-$wp_config['autosave_interval']  = 7200;
-$wp_config['debug']              = 1;
-$wp_config['wpcom_api_key']      = '';
+define('POSTREVISIONS', 3);
+define('DISALLOWFILEEDIT', 0);
+define('AUTOSAVETIMEINTERVAL', 7200);
+define('WPCONFIGDEBUG', 0);
+define('WPCONFIGDEBUGDISPLAY', 0);
+define('WPCONFIGDEBUGLOG', 0);
+define('WPCOMAPIKEY', '');
 
 
 ////////
-// Post to automatically add after WordPress installation (uncomment to use):
-$title   = 'Title';
-$status  = 'Status (publish, draft, etc...). Default : draft';
-$type    = 'Post Type. Default : post';
-$content = 'Content (HTML allowed)';
-$slug    = 'Slug';
-$parent  = 'Parent page Title';
-////////
-
+/* Post to automatically add after WordPress installation :
+///  title = Title
+///  status = Status (publish, draft, etc...). Default : draft
+///  type = Post Type. Default : post
+///  content = Content (HTML allowed)
+///  slug = Slug
+///  parent = Parent page Title
+*///////
+/// Examples:
+/*//
 $posts[0] = title::Legal - status::publish - content::Lorem ipsum dolor sit amet - type::page;
 $posts[1] = title::Contact - status::publish - content::Lorem ipsum dolor sit amet - type::page - parent::Legal;
+
+*/
+
+
+$posts[0]['title'] = 'Home';
+$posts[0]['status'] = 'publish';
+$posts[0]['type'] = 'page';
+$posts[0]['content'] = 'Welcome to '.TITLE;
+$posts[0]['slug'] = 'home';
+//$posts[0]['parent'] = '';
+
+$posts[1]['title'] = 'Blog';
+$posts[1]['status'] = 'publish';
+$posts[1]['type'] = 'page';
+$posts[1]['content'] = 'Blog Page';
+$posts[1]['slug'] = 'blog';
+//$posts[0]['parent'] = '';
