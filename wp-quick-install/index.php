@@ -1,12 +1,12 @@
 <?php
 /*
-Script Name: WP Quick Install
+Script Name: WP Quick Install - PHP ONLY VERSION
 Author: Jonathan Buttigieg
-Contributors: Julio Potier
+Contributors: Julio Potier, Brandon Knudsen
 Script URI: http://wp-quick-install.com
-Version: 1.4.1
+Version: 1.5.0
 Licence: GPLv3
-Last Update: 08 jan 15
+Last Update: 21 Feb 2016
 */
 
 @set_time_limit( 0 );
